@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/Users/Yuan/miniconda3/Lib/site-packages/opinion_clob_sdk/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
