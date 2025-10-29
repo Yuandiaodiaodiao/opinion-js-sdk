@@ -44,7 +44,7 @@ export class MarketApi {
       queryParams.marketType = params.topicType;
     }
 
-    if (params.status && params.status !== TopicStatusFilter.ALL) {
+    if (params.status !== undefined && params.status !== TopicStatusFilter.ALL) {
       queryParams.status = params.status;
     }
 

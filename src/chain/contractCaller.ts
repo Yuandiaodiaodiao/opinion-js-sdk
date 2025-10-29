@@ -4,13 +4,11 @@ import {
   createWalletClient,
   http,
   getContract,
-  encodeFunctionData,
   formatEther,
 } from 'viem';
 import { bsc } from 'viem/chains';
 import { Signer } from './signer.js';
 import { ERC20_ABI, CONDITIONAL_TOKENS_ABI } from './abis.js';
-import { TimeCache } from '../utils/cache.js';
 import { InsufficientGasBalance, BalanceNotEnough } from '../errors.js';
 import { GAS_SETTINGS } from '../config.js';
 import type { TransactionResult } from '../types/models.js';
@@ -25,8 +23,8 @@ export class ContractCaller {
   private tokenDecimalsCache: Map<Address, number> = new Map();
 
   constructor(
-    private rpcUrl: string,
-    private chainId: number,
+    rpcUrl: string,
+    _chainId: number,
     privateKey: Hex,
     private conditionalTokensAddr: Address,
   ) {
@@ -138,6 +136,7 @@ export class ContractCaller {
       functionName: 'approve',
       args: [exchangeAddr, MAX_UINT256],
       account: this.signer.getAccount(),
+      chain: undefined,
     });
 
     // Wait for transaction receipt
@@ -198,6 +197,7 @@ export class ContractCaller {
         functionName: 'approve',
         args: [this.conditionalTokensAddr, BigInt(2) ** BigInt(256) - BigInt(1)],
         account: this.signer.getAccount(),
+        chain: undefined,
       });
       await this.publicClient.waitForTransactionReceipt({ hash: approveHash });
     }
@@ -218,6 +218,7 @@ export class ContractCaller {
         amount,
       ],
       account: this.signer.getAccount(),
+      chain: undefined,
     });
 
     const receipt = await this.publicClient.waitForTransactionReceipt({ hash });
@@ -263,6 +264,7 @@ export class ContractCaller {
         amount,
       ],
       account: this.signer.getAccount(),
+      chain: undefined,
     });
 
     const receipt = await this.publicClient.waitForTransactionReceipt({ hash });
@@ -301,6 +303,7 @@ export class ContractCaller {
         indexSets,
       ],
       account: this.signer.getAccount(),
+      chain: undefined,
     });
 
     const receipt = await this.publicClient.waitForTransactionReceipt({ hash });

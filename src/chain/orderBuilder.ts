@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'viem';
+import type { Address } from 'viem';
 import { Signer } from './signer.js';
 import type { OrderData, SignedOrder, EIP712Domain } from '../types/index.js';
 import { ZERO_ADDRESS } from '../config.js';

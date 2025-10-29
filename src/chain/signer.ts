@@ -1,5 +1,5 @@
 import type { Address, Hex, PrivateKeyAccount } from 'viem';
-import { privateKeyToAccount, signTypedData } from 'viem/accounts';
+import { privateKeyToAccount } from 'viem/accounts';
 import type { EIP712Domain, OrderData } from '../types/index.js';
 import { EIP712_ORDER_TYPES } from '../types/index.js';
 
@@ -42,8 +42,7 @@ export class Signer {
       signatureType: orderData.signatureType,
     };
 
-    const signature = await signTypedData({
-      account: this.account,
+    const signature = await this.account.signTypedData({
       domain: {
         name: domain.name,
         version: domain.version,
