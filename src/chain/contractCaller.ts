@@ -13,6 +13,7 @@ import { ERC20_ABI, CONDITIONAL_TOKENS_ABI } from './abis.js';
 import { TimeCache } from '../utils/cache.js';
 import { InsufficientGasBalance, BalanceNotEnough } from '../errors.js';
 import { GAS_SETTINGS } from '../config.js';
+import type { TransactionResult } from '../types/models.js';
 
 /**
  * Contract caller for blockchain operations
@@ -106,9 +107,9 @@ export class ContractCaller {
    * Enable trading by approving tokens
    * @param quoteTokenAddr - Quote token address
    * @param exchangeAddr - Exchange contract address
-   * @returns Transaction hash
+   * @returns Transaction result with hash, receipt, and event
    */
-  async enableTrading(quoteTokenAddr: Address, exchangeAddr: Address): Promise<Hex> {
+  async enableTrading(quoteTokenAddr: Address, exchangeAddr: Address): Promise<TransactionResult | null> {
     const signerAddress = this.signer.address();
 
     // Check current allowance
@@ -120,11 +121,11 @@ export class ContractCaller {
 
     const allowance = await quoteTokenContract.read.allowance([signerAddress, exchangeAddr]);
 
-    // If already approved, return early
+    // If already approved, return null (no transaction needed)
     const MAX_UINT256 = BigInt(2) ** BigInt(256) - BigInt(1);
     if (allowance >= MAX_UINT256 / BigInt(2)) {
       // Already has sufficient allowance
-      return '0x0' as Hex;
+      return null;
     }
 
     // Check gas balance
@@ -146,7 +147,11 @@ export class ContractCaller {
       throw new Error(`Transaction failed. Hash: ${hash}`);
     }
 
-    return hash;
+    return {
+      txHash: hash,
+      receipt,
+      event: receipt.logs[0], // First log entry as event
+    };
   }
 
   /**
@@ -155,14 +160,14 @@ export class ContractCaller {
    * @param conditionId - Condition ID
    * @param amount - Amount in wei
    * @param partition - Partition array
-   * @returns Transaction hash
+   * @returns Transaction result with hash, receipt, and event
    */
   async split(
     quoteTokenAddr: Address,
     conditionId: Hex,
     amount: bigint,
     partition: bigint[],
-  ): Promise<Hex> {
+  ): Promise<TransactionResult> {
     const signerAddress = this.signer.address();
 
     // Check balance
@@ -221,7 +226,11 @@ export class ContractCaller {
       throw new Error(`Transaction failed. Hash: ${hash}`);
     }
 
-    return hash;
+    return {
+      txHash: hash,
+      receipt,
+      event: receipt.logs[0],
+    };
   }
 
   /**
@@ -230,14 +239,14 @@ export class ContractCaller {
    * @param conditionId - Condition ID
    * @param amount - Amount in wei
    * @param partition - Partition array
-   * @returns Transaction hash
+   * @returns Transaction result with hash, receipt, and event
    */
   async merge(
     quoteTokenAddr: Address,
     conditionId: Hex,
     amount: bigint,
     partition: bigint[],
-  ): Promise<Hex> {
+  ): Promise<TransactionResult> {
     // Check gas balance
     await this.checkGasBalance(300000n);
 
@@ -262,7 +271,11 @@ export class ContractCaller {
       throw new Error(`Transaction failed. Hash: ${hash}`);
     }
 
-    return hash;
+    return {
+      txHash: hash,
+      receipt,
+      event: receipt.logs[0],
+    };
   }
 
   /**
@@ -270,9 +283,9 @@ export class ContractCaller {
    * @param quoteTokenAddr - Quote token address
    * @param conditionId - Condition ID
    * @param indexSets - Index sets to redeem
-   * @returns Transaction hash
+   * @returns Transaction result with hash, receipt, and event
    */
-  async redeem(quoteTokenAddr: Address, conditionId: Hex, indexSets: bigint[]): Promise<Hex> {
+  async redeem(quoteTokenAddr: Address, conditionId: Hex, indexSets: bigint[]): Promise<TransactionResult> {
     // Check gas balance
     await this.checkGasBalance(300000n);
 
@@ -296,7 +309,11 @@ export class ContractCaller {
       throw new Error(`Transaction failed. Hash: ${hash}`);
     }
 
-    return hash;
+    return {
+      txHash: hash,
+      receipt,
+      event: receipt.logs[0],
+    };
   }
 
   /**

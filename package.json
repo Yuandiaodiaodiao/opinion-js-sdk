@@ -18,7 +18,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch"
   },
   "keywords": [
     "opinion",
@@ -39,6 +41,8 @@
     "@types/node": "^20.17.6",
     "dotenv": "^16.6.1",
     "tsup": "^8.3.5",
+    "typedoc": "^0.27.4",
+    "typedoc-plugin-markdown": "^4.3.1",
     "typescript": "^5.7.2"
   },
   "engines": {

@@ -20,7 +20,7 @@ import {
 import {
   DEFAULT_CONTRACT_ADDRESSES,
   DEFAULT_CACHE_TTL,
-  CHAIN_ID_BNB_MAINNET,
+  CHAIN_ID_BNBCHAIN_MAINNET,
 } from './config.js';
 import type {
   PlaceOrderDataInput,
@@ -34,6 +34,7 @@ import type {
   Orderbook,
   FeeRates,
   PriceHistoryPoint,
+  TransactionResult,
 } from './types/index.js';
 import { OrderSide, OrderType, SignatureType, TopicStatus, TopicType } from './types/index.js';
 
@@ -92,14 +93,14 @@ export class Client {
    * @param config - Client configuration
    */
   constructor(config: ClientConfig) {
-    this.chainId = config.chainId ?? CHAIN_ID_BNB_MAINNET;
+    this.chainId = config.chainId ?? CHAIN_ID_BNBCHAIN_MAINNET;
     validateChainId(this.chainId);
 
     this.walletAddress = config.walletAddress;
 
     // Initialize API clients
     this.apiClient = new ApiClient(config.host, config.apiKey);
-    this.marketApi = new MarketApi(this.apiClient);
+    this.marketApi = new MarketApi(this.apiClient, this.chainId);
     this.userApi = new UserApi(this.apiClient, this.chainId);
 
     // Initialize blockchain components
@@ -130,12 +131,12 @@ export class Client {
 
   /**
    * Enable trading by approving tokens for the exchange
-   * @returns Transaction hashes for approvals
+   * @returns Array of transaction results (aligned with Python SDK)
    */
-  async enableTrading(): Promise<Hex[]> {
+  async enableTrading(): Promise<TransactionResult[]> {
     const quoteTokens = await this.getQuoteTokens(true);
 
-    const txHashes: Hex[] = [];
+    const results: TransactionResult[] = [];
 
     for (const quoteToken of quoteTokens) {
       const quoteTokenAddr = quoteToken.quote_token_address as Address;
@@ -147,17 +148,17 @@ export class Client {
         continue;
       }
 
-      const hash = await this.contractCaller.enableTrading(quoteTokenAddr, exchangeAddr);
+      const result = await this.contractCaller.enableTrading(quoteTokenAddr, exchangeAddr);
 
-      if (hash !== '0x0') {
-        txHashes.push(hash);
+      if (result) {
+        results.push(result);
       }
 
       // Cache successful approval
       this.enableTradingCache.set(cacheKey, true);
     }
 
-    return txHashes;
+    return results;
   }
 
   /**
@@ -165,9 +166,9 @@ export class Client {
    * @param marketId - Market ID
    * @param amount - Amount in wei
    * @param checkApproval - Whether to check and enable trading first
-   * @returns Transaction hash
+   * @returns Transaction result (aligned with Python SDK)
    */
-  async split(marketId: number, amount: bigint, checkApproval: boolean = true): Promise<Hex> {
+  async split(marketId: number, amount: bigint, checkApproval: boolean = true): Promise<TransactionResult> {
     validateMarketId(marketId);
 
     if (amount <= 0n) {
@@ -207,9 +208,9 @@ export class Client {
    * @param marketId - Market ID
    * @param amount - Amount in wei
    * @param checkApproval - Whether to check and enable trading first
-   * @returns Transaction hash
+   * @returns Transaction result (aligned with Python SDK)
    */
-  async merge(marketId: number, amount: bigint, checkApproval: boolean = true): Promise<Hex> {
+  async merge(marketId: number, amount: bigint, checkApproval: boolean = true): Promise<TransactionResult> {
     validateMarketId(marketId);
 
     if (amount <= 0n) {
@@ -243,9 +244,9 @@ export class Client {
    * Redeem winning tokens after market resolution
    * @param marketId - Market ID
    * @param checkApproval - Whether to check and enable trading first
-   * @returns Transaction hash
+   * @returns Transaction result (aligned with Python SDK)
    */
-  async redeem(marketId: number, checkApproval: boolean = true): Promise<Hex> {
+  async redeem(marketId: number, checkApproval: boolean = true): Promise<TransactionResult> {
     validateMarketId(marketId);
 
     if (checkApproval) {

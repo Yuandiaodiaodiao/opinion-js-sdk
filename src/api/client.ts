@@ -76,6 +76,11 @@ export class ApiClient {
     }
 
     const data: ApiResponse<T> = await response.json();
+    // Debug: Log raw API response
+    console.log('\n=== RAW API RESPONSE ===');
+    console.log('Endpoint:', finalEndpoint);
+    console.log('Response:', JSON.stringify(data, null, 2));
+    console.log('========================\n');
     return this.validateResponse(data, `GET ${finalEndpoint}`);
   }
 
@@ -106,6 +111,11 @@ export class ApiClient {
     }
 
     const data: ApiResponse<T> = await response.json();
+    // Debug: Log raw API response
+    console.log('\n=== RAW API POST RESPONSE ===');
+    console.log('Endpoint:', endpoint);
+    console.log('Response:', JSON.stringify(data, null, 2));
+    console.log('=============================\n');
     return this.validateResponse(data, `POST ${endpoint}`);
   }
 
@@ -123,11 +133,13 @@ export class ApiClient {
       throw new OpenApiError(`Invalid response format from ${operationName}`);
     }
 
-    // Return data, list, or the entire result object
+    // Return data, list, history, or the entire result object
     if (response.result.data !== undefined) {
       return response.result.data as T;
     } else if (response.result.list !== undefined) {
       return response.result.list as T;
+    } else if ((response.result as any).history !== undefined) {
+      return (response.result as any).history as T;
     } else {
       // For APIs that return data directly in result (like balance, auth)
       return response.result as unknown as T;
@@ -169,6 +181,12 @@ export class ApiClient {
     }
 
     const data: ApiResponse<T> = await response.json();
+
+    // Debug: Log raw API response for list endpoints
+    console.log('\n=== RAW API LIST RESPONSE ===');
+    console.log('Endpoint:', endpoint);
+    console.log('Response:', JSON.stringify(data, null, 2));
+    console.log('============================\n');
 
     if (data.errno !== undefined && data.errno !== 0) {
       throw new OpenApiError(`Failed to GET ${endpoint}: ${data.errmsg || 'Unknown error'}`);

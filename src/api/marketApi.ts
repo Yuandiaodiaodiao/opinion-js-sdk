@@ -7,7 +7,10 @@ import { TopicType, TopicStatusFilter } from '../types/index.js';
  * Market API for market data operations
  */
 export class MarketApi {
-  constructor(private client: ApiClient) {}
+  constructor(
+    private client: ApiClient,
+    private chainId: number,
+  ) {}
 
   /**
    * Get supported quote tokens
@@ -80,6 +83,7 @@ export class MarketApi {
 
     const queryParams: Record<string, any> = {
       token_id: params.tokenId,
+      chain_id: String(this.chainId),
     };
 
     if (params.interval) {
@@ -103,6 +107,7 @@ export class MarketApi {
     validateTokenId(tokenId);
     return this.client.get<Orderbook>('/openapi/token/orderbook', {
       token_id: tokenId,
+      chain_id: String(this.chainId),
     });
   }
 
@@ -125,6 +130,7 @@ export class MarketApi {
     validateTokenId(tokenId);
     return this.client.get<FeeRates>('/openapi/token/fee-rates', {
       token_id: tokenId,
+      chain_id: String(this.chainId),
     });
   }
 

@@ -231,12 +231,12 @@ async function testGetPriceHistory(client, tokenId) {
     console.log(`  数据点数量: ${history.length}`);
     if (history.length > 0) {
       const latest = history[history.length - 1];
-      console.log(`  最新价格: ${latest.price}`);
-      if (latest.timestamp) {
-        console.log(`  时间戳: ${new Date(latest.timestamp * 1000).toLocaleString()}`);
+      console.log(`  最新价格: ${latest.p}`);
+      if (latest.t) {
+        console.log(`  时间戳: ${new Date(latest.t * 1000).toLocaleString()}`);
       }
-      if (latest.volume) {
-        console.log(`  成交量: ${latest.volume}`);
+      if (latest.v) {
+        console.log(`  成交量: ${latest.v}`);
       }
     }
     return history;

@@ -8,14 +8,20 @@ export const SUPPORTED_CHAIN_IDS = [56] as const;
 
 /**
  * BNB Chain mainnet ID
+ * @deprecated Use CHAIN_ID_BNBCHAIN_MAINNET for alignment with Python SDK
  */
 export const CHAIN_ID_BNB_MAINNET = 56;
+
+/**
+ * BNB Chain mainnet ID (aligned with Python SDK naming)
+ */
+export const CHAIN_ID_BNBCHAIN_MAINNET = 56;
 
 /**
  * Default contract addresses by chain ID
  */
 export const DEFAULT_CONTRACT_ADDRESSES: Record<number, ChainContractAddresses> = {
-  [CHAIN_ID_BNB_MAINNET]: {
+  [CHAIN_ID_BNBCHAIN_MAINNET]: {
     conditional_tokens: '0xAD1a38cEc043e70E83a3eC30443dB285ED10D774',
     multisend: '0x998739BFdAAdde7C933B942a68053933098f9EDa',
   },

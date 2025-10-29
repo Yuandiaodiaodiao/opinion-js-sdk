@@ -157,20 +157,6 @@ export interface Market {
   cutoffAt?: number;
   /** Resolved timestamp */
   resolvedAt?: number;
-
-  // Legacy fields for backward compatibility (deprecated)
-  /** @deprecated Use marketId */
-  id?: number;
-  /** @deprecated Use marketTitle */
-  title?: string;
-  /** @deprecated Use quoteToken */
-  quote_token?: Address;
-  /** @deprecated Use conditionId */
-  condition_id?: string;
-  /** @deprecated Use yesTokenId/noTokenId */
-  outcome_tokens?: OutcomeToken[];
-  /** @deprecated Use createdAt */
-  created_at?: number;
 }
 
 /**
@@ -276,11 +262,11 @@ export interface Trade {
  */
 export interface PriceHistoryPoint {
   /** Timestamp */
-  timestamp: number;
+  t: number;
   /** Price */
-  price: string;
+  p: string;
   /** Volume */
-  volume?: string;
+  v?: string;
 }
 
 /**
@@ -349,4 +335,16 @@ export const EIP712_ORDER_TYPES = {
 export interface ChainContractAddresses {
   conditional_tokens: Address;
   multisend: Address;
+}
+
+/**
+ * Transaction result (aligned with Python SDK Tuple[tx_hash, tx_receipt, contract_event])
+ */
+export interface TransactionResult {
+  /** Transaction hash */
+  txHash: Hex;
+  /** Transaction receipt */
+  receipt: any;
+  /** Contract event (if any) */
+  event?: any;
 }
