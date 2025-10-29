@@ -1,5 +1,7 @@
 # Opinion CLOB SDK (TypeScript)
 
+> **⚠️ DISCLAIMER: This is an UNOFFICIAL Node.js SDK for Opinion Labs. This project is not affiliated with, endorsed by, or maintained by Opinion Labs. Use at your own risk.**
+
 TypeScript SDK for interacting with Opinion Labs' CLOB (Central Limit Order Book) prediction markets on BNB Chain.
 
 ## Features
@@ -15,13 +17,13 @@ TypeScript SDK for interacting with Opinion Labs' CLOB (Central Limit Order Book
 ## Installation
 
 ```bash
-npm install opinion-clob-sdk
+npm install unofficial-opinion-clob-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { Client, OrderSide, OrderType } from 'opinion-clob-sdk';
+import { Client, OrderSide, OrderType } from 'unofficial-opinion-clob-sdk';
 
 // Initialize the client
 const client = new Client({
@@ -278,7 +280,7 @@ const trades = await client.getMyTrades({
 ### Amount Conversion
 
 ```typescript
-import { safeAmountToWei, weiToAmount } from 'opinion-clob-sdk';
+import { safeAmountToWei, weiToAmount } from 'unofficial-opinion-clob-sdk';
 
 // Convert human-readable amount to wei
 const amountWei = safeAmountToWei(100.5, 6); // 100500000n (for 6 decimals)
@@ -290,7 +292,7 @@ const amount = weiToAmount(100500000n, 6); // "100.5"
 ### Price Validation
 
 ```typescript
-import { validatePrice } from 'opinion-clob-sdk';
+import { validatePrice } from 'unofficial-opinion-clob-sdk';
 
 // Validate price is within 0.001 - 0.999 with max 6 decimals
 validatePrice('0.550000'); // OK
@@ -340,7 +342,7 @@ import {
   OpenApiError,
   InsufficientGasBalance,
   BalanceNotEnough,
-} from 'opinion-clob-sdk';
+} from 'unofficial-opinion-clob-sdk';
 
 try {
   await client.placeOrder({ ... });
@@ -435,4 +437,4 @@ For issues and questions:
 
 ## Credits
 
-Converted from the official Python SDK by Opinion Labs.
+This unofficial SDK is inspired by and converted from the official Python SDK patterns. This is a community-maintained project and is not officially supported by Opinion Labs.
