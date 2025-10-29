@@ -706,7 +706,7 @@ export class Client {
       filteredOrders = allOrders.filter((order) => order.side === params.side);
     }
 
-    const orderIds = filteredOrders.map((order) => order.id);
+    const orderIds = filteredOrders.map((order) => order.orderId);
 
     if (orderIds.length === 0) {
       return {

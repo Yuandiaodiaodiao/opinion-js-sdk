@@ -103,16 +103,22 @@ export interface SignedOrder {
  * Quote token information
  */
 export interface QuoteToken {
+  /** Token ID */
+  id: number;
+  /** Token name */
+  quoteTokenName: string;
   /** Token address */
-  address: Address;
+  quoteTokenAddress: Address;
+  /** CTF Exchange address */
+  ctfExchangeAddress: Address;
+  /** Token decimals */
+  decimal: number;
   /** Token symbol (e.g., USDC) */
   symbol: string;
-  /** Token name */
-  name: string;
-  /** Token decimals */
-  decimals: number;
   /** Chain ID */
-  chainId: number;
+  chainId: string;
+  /** Created at timestamp */
+  createdAt: number;
 }
 
 /**
@@ -176,31 +182,81 @@ export interface OutcomeToken {
  */
 export interface Position {
   /** Market ID */
-  market_id: number;
-  /** Token ID */
-  token_id: string;
+  marketId: number;
+  /** Market title */
+  marketTitle: string;
+  /** Market status (numeric) */
+  marketStatus: number;
+  /** Market status (enum string) */
+  marketStatusEnum: string;
+  /** Market cutoff timestamp */
+  marketCutoffAt: number;
+  /** Root market ID */
+  rootMarketId: number;
+  /** Root market title */
+  rootMarketTitle: string;
   /** Outcome name */
   outcome: string;
-  /** Position size */
-  size: string;
-  /** Average entry price */
-  avg_price?: string;
+  /** Outcome side (numeric) */
+  outcomeSide: number;
+  /** Outcome side (enum string) */
+  outcomeSideEnum: string;
+  /** Shares owned */
+  sharesOwned: string;
+  /** Shares frozen */
+  sharesFrozen: string;
   /** Unrealized PnL */
-  unrealized_pnl?: string;
+  unrealizedPnl: string;
+  /** Unrealized PnL percent */
+  unrealizedPnlPercent: string;
+  /** Daily PnL change */
+  dailyPnlChange: string;
+  /** Daily PnL change percent */
+  dailyPnlChangePercent: string;
+  /** Condition ID */
+  conditionId: string;
+  /** Token ID */
+  tokenId: string;
+  /** Current value in quote token */
+  currentValueInQuoteToken: string;
+  /** Average entry price */
+  avgEntryPrice: string;
+  /** Claim status (numeric) */
+  claimStatus: number;
+  /** Claim status (enum string) */
+  claimStatusEnum: string;
+  /** Quote token address */
+  quoteToken: Address;
 }
 
 /**
- * User balance
+ * Single token balance
+ */
+export interface TokenBalance {
+  /** Quote token address */
+  quoteToken: Address;
+  /** Token decimals */
+  tokenDecimals: number;
+  /** Total balance */
+  totalBalance: string;
+  /** Available balance */
+  availableBalance: string;
+  /** Frozen balance */
+  frozenBalance: string;
+}
+
+/**
+ * User balance response
  */
 export interface Balance {
-  /** Token address */
-  token_address: Address;
-  /** Token symbol */
-  symbol: string;
-  /** Available balance */
-  balance: string;
-  /** Balance in USD */
-  balance_usd?: string;
+  /** Wallet address */
+  walletAddress: Address;
+  /** Multi-signature address */
+  multiSignAddress: Address;
+  /** Chain ID */
+  chainId: string;
+  /** Token balances */
+  balances: TokenBalance[];
 }
 
 /**
@@ -208,53 +264,107 @@ export interface Balance {
  */
 export interface Order {
   /** Order ID */
-  id: string;
+  orderId: string;
+  /** Transaction number */
+  transNo: string;
+  /** Order status (numeric) */
+  status: number;
+  /** Order status (enum string) */
+  statusEnum: string;
   /** Market ID */
-  market_id: number;
-  /** Token ID */
-  token_id: string;
-  /** Maker address */
-  maker: Address;
-  /** Order side */
+  marketId: number;
+  /** Market title */
+  marketTitle: string;
+  /** Root market ID */
+  rootMarketId: number;
+  /** Root market title */
+  rootMarketTitle: string;
+  /** Order side (numeric) */
   side: number;
+  /** Order side (enum string) */
+  sideEnum: string;
+  /** Trading method (numeric) */
+  tradingMethod: number;
+  /** Trading method (enum string) */
+  tradingMethodEnum: string;
+  /** Outcome name */
+  outcome: string;
+  /** Outcome side (numeric) */
+  outcomeSide: number;
+  /** Outcome side (enum string) */
+  outcomeSideEnum: string;
   /** Price */
   price: string;
-  /** Original amount */
-  original_amount: string;
+  /** Order shares */
+  orderShares: string;
+  /** Order amount */
+  orderAmount: string;
+  /** Filled shares */
+  filledShares: string;
   /** Filled amount */
-  filled_amount: string;
-  /** Remaining amount */
-  remaining_amount: string;
-  /** Order status */
-  status: number;
+  filledAmount: string;
+  /** Profit */
+  profit: string;
+  /** Quote token address */
+  quoteToken: Address;
   /** Created at timestamp */
-  created_at: number;
-  /** Updated at timestamp */
-  updated_at?: number;
+  createdAt: number;
+  /** Expires at timestamp */
+  expiresAt: number;
+  /** Related trades */
+  trades: any[];
 }
 
 /**
  * Trade information
  */
 export interface Trade {
-  /** Trade ID */
-  id: string;
+  /** Order number */
+  orderNo: string;
+  /** Trade number */
+  tradeNo: string;
+  /** Transaction hash */
+  txHash: string;
   /** Market ID */
-  market_id: number;
-  /** Token ID */
-  token_id: string;
-  /** Order ID */
-  order_id: string;
-  /** Side */
-  side: number;
+  marketId: number;
+  /** Market title */
+  marketTitle: string;
+  /** Root market ID */
+  rootMarketId: number;
+  /** Root market title */
+  rootMarketTitle: string;
+  /** Side (string) */
+  side: string;
+  /** Outcome name */
+  outcome: string;
+  /** Outcome side (numeric) */
+  outcomeSide: number;
+  /** Outcome side (enum string) */
+  outcomeSideEnum: string;
   /** Price */
   price: string;
+  /** Shares */
+  shares: string;
   /** Amount */
   amount: string;
   /** Fee */
-  fee?: string;
-  /** Timestamp */
-  timestamp: number;
+  fee: number | string;
+  /** Profit */
+  profit: string;
+  /** Quote token address */
+  quoteToken: Address;
+  /** Quote token USD price */
+  quoteTokenUsdPrice: string;
+  /** USD amount */
+  usdAmount: string;
+  /** Trade status (numeric) */
+  status: number;
+  /** Trade status (enum string) */
+  statusEnum: string;
+  /** Chain ID */
+  chainId: string;
+  /** Created at timestamp */
+  createdAt: number;
 }
 
 /**
@@ -293,10 +403,12 @@ export interface Orderbook {
  * Fee rates
  */
 export interface FeeRates {
-  /** Maker fee rate in basis points */
-  maker_fee_bps: string;
+  /** Token ID */
+  tokenId: string;
   /** Taker fee rate in basis points */
-  taker_fee_bps: string;
+  takerFeeBps: string;
+  /** Maker fee rate in basis points */
+  makerFeeBps: string;
 }
 
 /**

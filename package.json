@@ -19,6 +19,10 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "node examples/integration-test.js",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },
@@ -39,11 +43,13 @@
   },
   "devDependencies": {
     "@types/node": "^20.17.6",
+    "@vitest/coverage-v8": "^2.1.8",
     "dotenv": "^16.6.1",
     "tsup": "^8.3.5",
     "typedoc": "^0.27.4",
     "typedoc-plugin-markdown": "^4.3.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   },
   "engines": {
     "node": ">=18.0.0"

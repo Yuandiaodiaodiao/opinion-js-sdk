@@ -75,12 +75,7 @@ export class ApiClient {
       throw new OpenApiError(`HTTP error! status: ${response.status}`);
     }
 
-    const data: ApiResponse<T> = await response.json();
-    // Debug: Log raw API response
-    console.log('\n=== RAW API RESPONSE ===');
-    console.log('Endpoint:', finalEndpoint);
-    console.log('Response:', JSON.stringify(data, null, 2));
-    console.log('========================\n');
+    const data = await response.json() as ApiResponse<T>;
     return this.validateResponse(data, `GET ${finalEndpoint}`);
   }
 
@@ -110,12 +105,7 @@ export class ApiClient {
       throw new OpenApiError(`HTTP error! status: ${response.status}`);
     }
 
-    const data: ApiResponse<T> = await response.json();
-    // Debug: Log raw API response
-    console.log('\n=== RAW API POST RESPONSE ===');
-    console.log('Endpoint:', endpoint);
-    console.log('Response:', JSON.stringify(data, null, 2));
-    console.log('=============================\n');
+    const data = await response.json() as ApiResponse<T>;
     return this.validateResponse(data, `POST ${endpoint}`);
   }
 
@@ -180,13 +170,7 @@ export class ApiClient {
       throw new OpenApiError(`HTTP error! status: ${response.status}`);
     }
 
-    const data: ApiResponse<T> = await response.json();
-
-    // Debug: Log raw API response for list endpoints
-    console.log('\n=== RAW API LIST RESPONSE ===');
-    console.log('Endpoint:', endpoint);
-    console.log('Response:', JSON.stringify(data, null, 2));
-    console.log('============================\n');
+    const data = await response.json() as ApiResponse<T>;
 
     if (data.errno !== undefined && data.errno !== 0) {
       throw new OpenApiError(`Failed to GET ${endpoint}: ${data.errmsg || 'Unknown error'}`);

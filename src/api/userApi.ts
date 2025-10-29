@@ -1,6 +1,6 @@
 import { ApiClient } from './client.js';
 import { validateOrderId, validatePagination } from '../utils/validation.js';
-import type { Order, Position, Balance, Trade } from '../types/index.js';
+import type { Order, Position, Trade } from '../types/index.js';
 
 /**
  * User API for account-related operations

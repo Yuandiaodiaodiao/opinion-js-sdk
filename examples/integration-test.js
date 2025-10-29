@@ -129,11 +129,11 @@ async function testGetQuoteTokens(client) {
     const tokens = await client.getQuoteTokens();
     logSuccess(`成功获取 ${tokens.length} 个报价代币`);
     tokens.forEach((token, i) => {
-      console.log(`  ${i + 1}. ${token.symbol} (${token.name})`);
-      console.log(`     地址: ${token.quote_token_address || token.address}`);
-      console.log(`     精度: ${token.decimal || token.decimals}`);
-      if (token.ctf_exchange_address) {
-        console.log(`     交易所: ${token.ctf_exchange_address}`);
+      console.log(`  ${i + 1}. ${token.symbol} (${token.quoteTokenName})`);
+      console.log(`     地址: ${token.quoteTokenAddress}`);
+      console.log(`     精度: ${token.decimal}`);
+      if (token.ctfExchangeAddress) {
+        console.log(`     交易所: ${token.ctfExchangeAddress}`);
       }
     });
     return tokens;
@@ -266,8 +266,8 @@ async function testGetFeeRates(client, tokenId) {
   try {
     const fees = await client.getFeeRates(tokenId);
     logSuccess(`成功获取手续费率`);
-    console.log(`  Maker 费率: ${fees.maker_fee_bps} bps`);
-    console.log(`  Taker 费率: ${fees.taker_fee_bps} bps`);
+    console.log(`  Maker 费率: ${fees.makerFeeBps} bps`);
+    console.log(`  Taker 费率: ${fees.takerFeeBps} bps`);
     return fees;
   } catch (error) {
     logError(`失败: ${error.message}`);
@@ -286,11 +286,11 @@ async function testGetMyOrders(client) {
       logInfo(`总订单数: ${result.total}`);
     }
     result.list.forEach((order, i) => {
-      console.log(`\n  ${i + 1}. 订单 ID: ${order.id}`);
-      console.log(`     市场 ID: ${order.market_id}`);
-      console.log(`     方向: ${order.side === 0 ? 'BUY' : 'SELL'}`);
+      console.log(`\n  ${i + 1}. 订单 ID: ${order.orderId}`);
+      console.log(`     市场 ID: ${order.marketId}`);
+      console.log(`     方向: ${order.sideEnum}`);
       console.log(`     价格: ${order.price}`);
-      console.log(`     状态: ${order.status}`);
+      console.log(`     状态: ${order.statusEnum}`);
     });
     return result;
   } catch (error) {
@@ -310,14 +310,14 @@ async function testGetMyPositions(client) {
       logInfo(`总持仓数: ${result.total}`);
     }
     result.list.forEach((pos, i) => {
-      console.log(`\n  ${i + 1}. 市场 ID: ${pos.market_id}`);
+      console.log(`\n  ${i + 1}. 市场 ID: ${pos.marketId}`);
       console.log(`     结果: ${pos.outcome}`);
-      console.log(`     持仓量: ${pos.size}`);
-      if (pos.avg_price) {
-        console.log(`     平均价格: ${pos.avg_price}`);
+      console.log(`     持仓量: ${pos.sharesOwned}`);
+      if (pos.avgEntryPrice) {
+        console.log(`     平均价格: ${pos.avgEntryPrice}`);
       }
-      if (pos.unrealized_pnl) {
-        console.log(`     未实现盈亏: ${pos.unrealized_pnl}`);
+      if (pos.unrealizedPnl) {
+        console.log(`     未实现盈亏: ${pos.unrealizedPnl}`);
       }
     });
     return result;
@@ -365,16 +365,16 @@ async function testGetMyTrades(client) {
       logInfo(`总交易数: ${result.total}`);
     }
     result.list.forEach((trade, i) => {
-      console.log(`\n  ${i + 1}. 交易 ID: ${trade.id}`);
-      console.log(`     市场 ID: ${trade.market_id}`);
-      console.log(`     方向: ${trade.side === 0 ? 'BUY' : 'SELL'}`);
+      console.log(`\n  ${i + 1}. 交易 ID: ${trade.tradeNo}`);
+      console.log(`     市场 ID: ${trade.marketId}`);
+      console.log(`     方向: ${trade.side}`);
       console.log(`     价格: ${trade.price}`);
       console.log(`     数量: ${trade.amount}`);
       if (trade.fee) {
         console.log(`     手续费: ${trade.fee}`);
       }
-      if (trade.timestamp) {
-        console.log(`     时间: ${new Date(trade.timestamp * 1000).toLocaleString()}`);
+      if (trade.createdAt) {
+        console.log(`     时间: ${new Date(trade.createdAt * 1000).toLocaleString()}`);
       }
     });
     return result;
