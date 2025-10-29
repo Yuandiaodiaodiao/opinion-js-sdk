@@ -1,6 +1,6 @@
 {
   "name": "unofficial-opinion-clob-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unofficial TypeScript SDK for Opinion Labs CLOB prediction markets",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -37,6 +37,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yuandiaodiaodiao/opinion-js-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Yuandiaodiaodiao/opinion-js-sdk/issues"
+  },
+  "homepage": "https://yuandiaodiaodiao.github.io/opinion-js-sdk/",
   "dependencies": {
     "decimal.js": "^10.4.3",
     "undici": "^7.2.0",
