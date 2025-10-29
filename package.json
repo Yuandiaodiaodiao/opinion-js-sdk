@@ -24,7 +24,8 @@
     "test:coverage": "vitest run --coverage",
     "test:integration": "node examples/integration-test.js",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "docs:serve": "python3 -m http.server 8080 --directory docs/api"
   },
   "keywords": [
     "opinion",
