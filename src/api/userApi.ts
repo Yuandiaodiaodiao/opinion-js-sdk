@@ -47,7 +47,7 @@ export class UserApi {
    */
   async getOrderById(orderId: string): Promise<Order> {
     validateOrderId(orderId);
-    return this.client.get<Order>('/openapi/order', { orderId: orderId });
+    return this.client.get<Order>('/openapi/order/{orderId}', {}, { orderId });
   }
 
   /**

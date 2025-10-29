@@ -51,14 +51,10 @@ export class MarketApi {
   /**
    * Get specific market by ID
    * @param marketId - Market ID
-   * @param chainId - Chain ID
    */
-  async getMarket(marketId: number, chainId: string): Promise<Market> {
+  async getMarket(marketId: number): Promise<Market> {
     validateMarketId(marketId);
-    return this.client.get<Market>('/openapi/market', {
-      marketId: marketId,
-      chainId: chainId,
-    });
+    return this.client.get<Market>('/openapi/market/{marketId}', {}, { marketId });
   }
 
   /**
@@ -67,7 +63,7 @@ export class MarketApi {
    */
   async getCategoricalMarket(marketId: number): Promise<any> {
     validateMarketId(marketId);
-    return this.client.get(`/openapi/market/${marketId}/categorical`);
+    return this.client.get('/openapi/market/categorical/{marketId}', {}, { marketId });
   }
 
   /**

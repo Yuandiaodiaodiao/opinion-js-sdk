@@ -327,7 +327,7 @@ export class Client {
       }
     }
 
-    const market = await this.marketApi.getMarket(marketId, String(this.chainId));
+    const market = await this.marketApi.getMarket(marketId);
 
     if (this.marketCache) {
       this.marketCache.set(`market_${marketId}`, market);

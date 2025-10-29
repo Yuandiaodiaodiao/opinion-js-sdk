@@ -34,8 +34,20 @@ export class ApiClient {
   /**
    * Make a GET request
    */
-  async get<T>(endpoint: string, params: Record<string, any> = {}): Promise<T> {
-    const url = new URL(`${this.host}${endpoint}`);
+  async get<T>(
+    endpoint: string,
+    params: Record<string, any> = {},
+    pathParams?: Record<string, any>,
+  ): Promise<T> {
+    // Replace path parameters in endpoint
+    let finalEndpoint = endpoint;
+    if (pathParams) {
+      for (const [key, value] of Object.entries(pathParams)) {
+        finalEndpoint = finalEndpoint.replace(`{${key}}`, String(value));
+      }
+    }
+
+    const url = new URL(`${this.host}${finalEndpoint}`);
     url.searchParams.append('apikey', this.apiKey);
 
     // Add other parameters
@@ -64,7 +76,7 @@ export class ApiClient {
     }
 
     const data: ApiResponse<T> = await response.json();
-    return this.validateResponse(data, `GET ${endpoint}`);
+    return this.validateResponse(data, `GET ${finalEndpoint}`);
   }
 
   /**
