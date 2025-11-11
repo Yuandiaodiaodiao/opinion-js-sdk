@@ -66,8 +66,8 @@ export interface ClientConfig {
  * Quote token with exchange info
  */
 interface QuoteTokenWithExchange extends QuoteToken {
-  ctf_exchange_address: Address;
-  quote_token_address: Address;
+  ctfExchangeAddress: Address;
+  quoteTokenAddress: Address;
   decimal: number;
 }
 
@@ -139,8 +139,8 @@ export class Client {
     const results: TransactionResult[] = [];
 
     for (const quoteToken of quoteTokens) {
-      const quoteTokenAddr = quoteToken.quote_token_address as Address;
-      const exchangeAddr = quoteToken.ctf_exchange_address as Address;
+      const quoteTokenAddr = quoteToken.quoteTokenAddress as Address;
+      const exchangeAddr = quoteToken.ctfExchangeAddress as Address;
 
       // Check if already enabled in cache
       const cacheKey = `${quoteTokenAddr}-${exchangeAddr}`;
@@ -404,14 +404,14 @@ export class Client {
 
     // Find matching quote token
     const quoteToken = quoteTokens.find(
-      (t) => t.quote_token_address.toLowerCase() === quoteTokenAddr,
+      (t) => t.quoteTokenAddress.toLowerCase() === quoteTokenAddr,
     );
 
     if (!quoteToken) {
       throw new OpenApiError('Quote token not found for this market');
     }
 
-    const exchangeAddr = quoteToken.ctf_exchange_address;
+    const exchangeAddr = quoteToken.ctfExchangeAddress;
     const quoteTokenDecimals = quoteToken.decimal;
 
     // Calculate maker amount
