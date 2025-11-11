@@ -1,6 +1,6 @@
 import type { Address, Hex, PrivateKeyAccount } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import type { EIP712Domain, OrderData } from '../types/index.js';
+import type { EIP712Domain, Order } from '../types/index.js';
 import { EIP712_ORDER_TYPES } from '../types/index.js';
 
 /**
@@ -22,26 +22,11 @@ export class Signer {
 
   /**
    * Sign an order using EIP712
-   * @param orderData - Order data to sign
+   * @param order - Complete order object to sign
    * @param domain - EIP712 domain
    * @returns Signature as hex string
    */
-  async signOrder(orderData: OrderData, domain: EIP712Domain): Promise<Hex> {
-    const message = {
-      salt: BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)),
-      maker: orderData.maker,
-      signer: orderData.signer,
-      taker: orderData.taker,
-      tokenId: BigInt(orderData.tokenId),
-      makerAmount: orderData.makerAmount,
-      takerAmount: orderData.takerAmount,
-      expiration: BigInt(orderData.expiration),
-      nonce: BigInt(orderData.nonce),
-      feeRateBps: BigInt(orderData.feeRateBps),
-      side: orderData.side,
-      signatureType: orderData.signatureType,
-    };
-
+  async signOrder(order: Order, domain: EIP712Domain): Promise<Hex> {
     const signature = await this.account.signTypedData({
       domain: {
         name: domain.name,
@@ -51,7 +36,7 @@ export class Signer {
       },
       types: EIP712_ORDER_TYPES,
       primaryType: 'Order',
-      message,
+      message: order,
     });
 
     return signature;

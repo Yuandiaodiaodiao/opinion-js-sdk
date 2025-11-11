@@ -1,6 +1,6 @@
-import type { Address } from 'viem';
+import type { Address, Hex } from 'viem';
 import { Signer } from './signer.js';
-import type { OrderData, SignedOrder, EIP712Domain } from '../types/index.js';
+import type { OrderData, Order, SignedOrder, EIP712Domain } from '../types/index.js';
 import { ZERO_ADDRESS } from '../config.js';
 
 /**
@@ -23,36 +23,89 @@ export class OrderBuilder {
   }
 
   /**
-   * Build and sign an order
-   * @param orderData - Order data
-   * @returns Signed order
+   * Generate random salt
    */
-  async buildSignedOrder(orderData: OrderData): Promise<SignedOrder> {
-    // Generate random salt
-    const salt = BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  private generateSalt(): bigint {
+    return BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  }
 
-    // Create complete order data with salt
-    const completeOrderData: OrderData = {
-      ...orderData,
-    };
+  /**
+   * Validate order inputs
+   */
+  private validateInputs(data: OrderData): boolean {
+    // Basic validation
+    if (!data.maker || !data.tokenId) {
+      return false;
+    }
+    return true;
+  }
 
-    // Sign the order
-    const signature = await this.signer.signOrder(completeOrderData, this.domain);
+  /**
+   * Build an order with all required fields
+   * @param orderData - Order data
+   * @returns Complete Order object
+   */
+  buildOrder(orderData: OrderData): Order {
+    if (!this.validateInputs(orderData)) {
+      throw new Error('Invalid order inputs');
+    }
 
-    // Return signed order in API format
-    const signedOrder: SignedOrder = {
-      salt: salt.toString(),
+    // Verify signer matches
+    if (orderData.signer !== this.signer.address()) {
+      throw new Error('Signer does not match');
+    }
+
+    return {
+      salt: this.generateSalt(),
       maker: orderData.maker,
       signer: orderData.signer,
       taker: orderData.taker,
-      tokenId: orderData.tokenId,
-      makerAmount: orderData.makerAmount.toString(),
-      takerAmount: orderData.takerAmount.toString(),
-      expiration: orderData.expiration,
-      nonce: orderData.nonce,
-      feeRateBps: orderData.feeRateBps,
-      side: orderData.side.toString(),
-      signatureType: orderData.signatureType.toString(),
+      tokenId: BigInt(orderData.tokenId),
+      makerAmount: orderData.makerAmount,
+      takerAmount: orderData.takerAmount,
+      expiration: BigInt(orderData.expiration),
+      nonce: BigInt(orderData.nonce),
+      feeRateBps: BigInt(orderData.feeRateBps),
+      side: orderData.side,
+      signatureType: orderData.signatureType,
+    };
+  }
+
+  /**
+   * Sign an order
+   * @param order - Order to sign
+   * @returns Signature
+   */
+  async buildOrderSignature(order: Order): Promise<Hex> {
+    return this.signer.signOrder(order, this.domain);
+  }
+
+  /**
+   * Build and sign an order
+   * @param orderData - Order data
+   * @returns Signed order in API format
+   */
+  async buildSignedOrder(orderData: OrderData): Promise<SignedOrder> {
+    // Build the order
+    const order = this.buildOrder(orderData);
+
+    // Sign the order
+    const signature = await this.buildOrderSignature(order);
+
+    // Convert to API format (SignedOrder)
+    const signedOrder: SignedOrder = {
+      salt: order.salt.toString(),
+      maker: order.maker,
+      signer: order.signer,
+      taker: order.taker,
+      tokenId: order.tokenId.toString(),
+      makerAmount: order.makerAmount.toString(),
+      takerAmount: order.takerAmount.toString(),
+      expiration: order.expiration.toString(),
+      nonce: order.nonce.toString(),
+      feeRateBps: order.feeRateBps.toString(),
+      side: order.side.toString(),
+      signatureType: order.signatureType.toString(),
       signature,
     };
 

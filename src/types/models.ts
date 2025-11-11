@@ -68,7 +68,37 @@ export interface OrderDataInput {
 }
 
 /**
- * Signed order structure
+ * Internal order structure for signing (bigint types for EIP712)
+ */
+export interface Order {
+  /** Order salt */
+  salt: bigint;
+  /** Maker address */
+  maker: Address;
+  /** Signer address */
+  signer: Address;
+  /** Taker address */
+  taker: Address;
+  /** Token ID */
+  tokenId: bigint;
+  /** Maker amount in wei */
+  makerAmount: bigint;
+  /** Taker amount in wei */
+  takerAmount: bigint;
+  /** Expiration timestamp */
+  expiration: bigint;
+  /** Nonce */
+  nonce: bigint;
+  /** Fee rate in basis points */
+  feeRateBps: bigint;
+  /** Order side */
+  side: number;
+  /** Signature type */
+  signatureType: number;
+}
+
+/**
+ * Signed order structure (string types for API)
  */
 export interface SignedOrder {
   /** Order salt */
