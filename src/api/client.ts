@@ -2,6 +2,30 @@ import { OpenApiError } from '../errors.js';
 import { ProxyAgent } from 'undici';
 
 /**
+ * Convert object keys to camelCase recursively
+ */
+function toCamelCase(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+function convertKeysToCamelCase(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => convertKeysToCamelCase(item));
+  }
+
+  const result: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    const camelKey = toCamelCase(key);
+    result[camelKey] = convertKeysToCamelCase(value);
+  }
+  return result;
+}
+
+/**
  * API response structure
  */
 interface ApiResponse<T = any> {
@@ -86,12 +110,15 @@ export class ApiClient {
     const url = new URL(`${this.host}${endpoint}`);
     url.searchParams.append('apikey', this.apiKey);
 
+    // Convert body keys to camelCase
+    const camelCaseBody = convertKeysToCamelCase(body);
+
     const fetchOptions: RequestInit = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(camelCaseBody),
     };
 
     // Add proxy agent if available
