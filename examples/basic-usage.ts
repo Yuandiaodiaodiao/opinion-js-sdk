@@ -18,7 +18,7 @@ async function main() {
     apiKey: process.env.OPINION_API_KEY || 'your-api-key',
     rpcUrl: 'https://bsc-dataseed.binance.org/', // BNB Chain RPC
     privateKey: (process.env.PRIVATE_KEY || '0x...') as Hex,
-    walletAddress: (process.env.WALLET_ADDRESS || '0x...') as Address,
+    vaultAddress: (process.env.VAULT_ADDRESS || '0x...') as Address,
     chainId: 56, // BNB Chain
   });
 

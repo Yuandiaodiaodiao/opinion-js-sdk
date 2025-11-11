@@ -52,8 +52,8 @@ export interface ClientConfig {
   rpcUrl: string;
   /** Private key for signing transactions */
   privateKey: Hex;
-  /** Wallet address (for EOA wallets) */
-  walletAddress: Address;
+  /** Vault address (multi-sig address for order maker) */
+  vaultAddress: Address;
   /** Conditional tokens contract address (optional, uses default if not provided) */
   conditionalTokensAddr?: Address;
   /** Quote tokens cache TTL in seconds (default: 3600) */
@@ -81,7 +81,7 @@ export class Client {
   private contractCaller: ContractCaller;
   private signer: Signer;
   private chainId: number;
-  private walletAddress: Address;
+  private vaultAddress: Address;
 
   // Caches
   private quoteTokensCache?: TimeCache<QuoteTokenWithExchange[]>;
@@ -96,7 +96,7 @@ export class Client {
     this.chainId = config.chainId ?? CHAIN_ID_BNBCHAIN_MAINNET;
     validateChainId(this.chainId);
 
-    this.walletAddress = config.walletAddress;
+    this.vaultAddress = config.vaultAddress;
 
     // Initialize API clients
     this.apiClient = new ApiClient(config.host, config.apiKey);
@@ -539,7 +539,7 @@ export class Client {
 
     // Create order data
     const orderData = builder.createOrderData({
-      maker: this.walletAddress,
+      maker: this.vaultAddress,
       tokenId: data.tokenId,
       makerAmount: recalculatedMakerAmount,
       takerAmount,

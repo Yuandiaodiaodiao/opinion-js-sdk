@@ -31,7 +31,7 @@ const client = new Client({
   apiKey: 'your-api-key',
   rpcUrl: 'https://bsc-dataseed.binance.org/',
   privateKey: '0x...',
-  walletAddress: '0x...',
+  vaultAddress: '0x...', // Multi-sig vault address
   chainId: 56, // BNB Chain
 });
 
@@ -73,8 +73,8 @@ interface ClientConfig {
   /** Private key for signing transactions (with 0x prefix) */
   privateKey: Hex;
 
-  /** Wallet address */
-  walletAddress: Address;
+  /** Vault address (multi-sig address for order maker) */
+  vaultAddress: Address;
 
   /** Conditional tokens contract address (optional, uses default) */
   conditionalTokensAddr?: Address;
@@ -438,3 +438,9 @@ For issues and questions:
 ## Credits
 
 This unofficial SDK is inspired by and converted from the official Python SDK patterns. This is a community-maintained project and is not officially supported by Opinion Labs.
+
+
+## publish
+首先更新包版本
+
+然后使用 node publish.js 推送

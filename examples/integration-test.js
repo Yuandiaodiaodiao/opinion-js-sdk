@@ -104,7 +104,7 @@ function initClient(useTestKey = false) {
       apiKey: process.env.API_KEY,
       rpcUrl: process.env.RPC_URL,
       privateKey: privateKey,
-      walletAddress: process.env.MULTI_SIG_ADDRESS,
+      vaultAddress: process.env.MULTI_SIG_ADDRESS,
       chainId: parseInt(process.env.CHAIN_ID),
       conditionalTokensAddr: process.env.CONDITIONAL_TOKEN_ADDR,
     });

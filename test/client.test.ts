@@ -8,7 +8,7 @@ const mockEnv = {
   API_KEY: 'test_api_key',
   RPC_URL: 'https://rpc.example.com',
   PRIVATE_KEY: '0x0123456789012345678901234567890123456789012345678901234567890123',
-  WALLET_ADDRESS: '0x1234567890123456789012345678901234567890',
+  VAULT_ADDRESS: '0x1234567890123456789012345678901234567890',
   CHAIN_ID: '56',
 };
 
@@ -20,7 +20,7 @@ describe('Client', () => {
         apiKey: mockEnv.API_KEY,
         rpcUrl: mockEnv.RPC_URL,
         privateKey: mockEnv.PRIVATE_KEY,
-        walletAddress: mockEnv.WALLET_ADDRESS,
+        vaultAddress: mockEnv.VAULT_ADDRESS,
         chainId: parseInt(mockEnv.CHAIN_ID),
       });
 
@@ -34,7 +34,7 @@ describe('Client', () => {
           apiKey: mockEnv.API_KEY,
           rpcUrl: mockEnv.RPC_URL,
           privateKey: mockEnv.PRIVATE_KEY,
-          walletAddress: mockEnv.WALLET_ADDRESS,
+          vaultAddress: mockEnv.VAULT_ADDRESS,
           chainId: 999, // Invalid chain ID
         });
       }).toThrow('Chain ID');
@@ -47,7 +47,7 @@ describe('Client', () => {
           apiKey: mockEnv.API_KEY,
           rpcUrl: mockEnv.RPC_URL,
           privateKey: 'invalid_key',
-          walletAddress: mockEnv.WALLET_ADDRESS,
+          vaultAddress: mockEnv.VAULT_ADDRESS,
           chainId: 56,
         });
       }).toThrow();
