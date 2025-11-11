@@ -544,7 +544,7 @@ export class Client {
       makerAmount: recalculatedMakerAmount,
       takerAmount,
       side: data.side,
-      signatureType: SignatureType.EOA,
+      signatureType: SignatureType.POLY_GNOSIS_SAFE,
     });
 
     // Build and sign order
@@ -552,6 +552,7 @@ export class Client {
 
     // Create API request body
     const orderRequest = {
+      contract_address:"",
       salt: signedOrder.salt,
       topic_id: Number(data.marketId),
       maker: signedOrder.maker,
@@ -566,10 +567,13 @@ export class Client {
       side: signedOrder.side,
       signature_type: signedOrder.signatureType,
       signature: signedOrder.signature,
+      sign:signedOrder.signature,
       currency_address: currencyAddr,
       price: data.price,
       trading_method: data.orderType,
       timestamp: Math.floor(Date.now() / 1000),
+      safe_rate:'0',
+      order_exp_time:'0'
     };
 
     return this.marketApi.placeOrder(orderRequest);
