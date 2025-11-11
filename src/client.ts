@@ -553,7 +553,7 @@ export class Client {
     // Create API request body
     const orderRequest = {
       salt: signedOrder.salt,
-      topic_id: data.marketId,
+      topic_id: Number(data.marketId),
       maker: signedOrder.maker,
       signer: signedOrder.signer,
       taker: signedOrder.taker,
