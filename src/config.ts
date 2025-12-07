@@ -47,7 +47,7 @@ export const DEFAULT_CACHE_TTL = {
 export const PRICE_CONSTRAINTS = {
   MIN: 0.001,
   MAX: 0.999,
-  MAX_DECIMALS: 6,
+  MAX_DECIMALS: 3,
 } as const;
 
 /**

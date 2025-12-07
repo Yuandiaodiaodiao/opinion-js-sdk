@@ -9,8 +9,9 @@ import { Signer } from './chain/signer.js';
 import { TimeCache } from './utils/cache.js';
 import {
   safeAmountToWei,
-  validatePrice,
   calculateOrderAmounts,
+  validatePrice,
+  validateAmount,
 } from './utils/precision.js';
 import { validateMarketId, validateChainId } from './utils/validation.js';
 import {
@@ -60,6 +61,8 @@ export interface ClientConfig {
   quoteTokensCacheTtl?: number;
   /** Market cache TTL in seconds (default: 300) */
   marketCacheTtl?: number;
+  /** HTTP proxy URL (optional, takes priority over environment variables) */
+  proxyUrl?: string;
 }
 
 /**
@@ -99,7 +102,7 @@ export class Client {
     this.vaultAddress = config.vaultAddress;
 
     // Initialize API clients
-    this.apiClient = new ApiClient(config.host, config.apiKey);
+    this.apiClient = new ApiClient(config.host, config.apiKey, config.proxyUrl);
     this.marketApi = new MarketApi(this.apiClient, this.chainId);
     this.userApi = new UserApi(this.apiClient, this.chainId);
 
@@ -392,6 +395,23 @@ export class Client {
    * @returns Order placement result
    */
   async placeOrder(data: PlaceOrderDataInput, checkApproval: boolean = false): Promise<any> {
+    // Validate and convert price (for limit orders)
+    if (data.orderType === OrderType.LIMIT_ORDER) {
+      data.price = validatePrice(data.price);
+    } else if (typeof data.price === 'number') {
+      data.price = String(data.price);
+    }
+
+    // Validate and convert makerAmountInQuoteToken
+    if (data.makerAmountInQuoteToken !== undefined) {
+      data.makerAmountInQuoteToken = validateAmount(data.makerAmountInQuoteToken);
+    }
+
+    // Validate and convert makerAmountInBaseToken (max 2 decimal places)
+    if (data.makerAmountInBaseToken !== undefined) {
+      data.makerAmountInBaseToken = validateAmount(data.makerAmountInBaseToken, 2, 'makerAmountInBaseToken');
+    }
+
     if (checkApproval) {
       await this.enableTrading();
     }
@@ -435,14 +455,6 @@ export class Client {
       throw new InvalidParamError('makerAmountInQuoteToken is not allowed for market sell');
     }
 
-    // Validate price for limit orders
-    if (data.orderType === OrderType.LIMIT_ORDER) {
-      validatePrice(data.price);
-      const priceDecimal = new Decimal(data.price);
-      if (priceDecimal.lte(0)) {
-        throw new InvalidParamError('Price must be positive for limit orders');
-      }
-    }
 
     // Calculate maker amount based on side and inputs
     if (data.side === OrderSide.BUY) {

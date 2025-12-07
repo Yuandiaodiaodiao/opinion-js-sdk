@@ -80,7 +80,7 @@ describe('Validation Utils', () => {
     });
 
     it('should reject prices with too many decimals', () => {
-      expect(() => validatePrice('0.1234567')).toThrow('Price precision cannot exceed');
+      expect(() => validatePrice('0.1234567')).toThrow('Price precision exceeds');
     });
   });
 });

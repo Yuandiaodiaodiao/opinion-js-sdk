@@ -47,9 +47,10 @@ export class ApiClient {
   constructor(
     private host: string,
     private apiKey: string,
+    proxyUrl?: string,
   ) {
-    // Auto-detect proxy from environment variables
-    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY || process.env.http_proxy || process.env.HTTP_PROXY;
+    // Use provided proxyUrl first, fallback to environment variables
+    const proxy = proxyUrl || process.env.https_proxy || process.env.HTTPS_PROXY || process.env.http_proxy || process.env.HTTP_PROXY;
     if (proxy) {
       this.proxyAgent = new ProxyAgent(proxy);
     }

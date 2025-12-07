@@ -9,12 +9,12 @@ export interface PlaceOrderDataInput {
   marketId: number;
   /** Token ID (outcome token) */
   tokenId: string;
-  /** Amount in quote token (e.g., 500 USDC). Either this or makerAmountInBaseToken must be provided. */
-  makerAmountInQuoteToken?: string;
-  /** Amount in base token (e.g., 500 YES tokens). Either this or makerAmountInQuoteToken must be provided. */
-  makerAmountInBaseToken?: string;
-  /** Price between 0.001 and 0.999 (max 6 decimals) */
-  price: string;
+  /** Amount in quote token (e.g., 500 USDC). Either this or makerAmountInBaseToken must be provided. Number will be converted to string. */
+  makerAmountInQuoteToken?: string | number;
+  /** Amount in base token (e.g., 500 YES tokens). Either this or makerAmountInQuoteToken must be provided. Number will be converted to string. Max 2 decimal places. */
+  makerAmountInBaseToken?: string | number;
+  /** Price between 0.001 and 0.999 (max 3 decimals). Number will be converted to string. */
+  price: string | number;
   /** Order side (BUY or SELL) */
   side: OrderSide;
   /** Order type (MARKET_ORDER or LIMIT_ORDER) */

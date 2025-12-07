@@ -49,27 +49,77 @@ export function weiToAmount(amountWei: bigint, decimals: number): string {
 
 /**
  * Validate price is within acceptable range and precision
- * @param price - Price string to validate
+ * Accepts string or number, returns validated string
+ * @param price - Price to validate (string or number)
  * @throws {InvalidParamError} If price is invalid
+ * @returns Validated price as string
  */
-export function validatePrice(price: string): void {
-  const priceDecimal = new Decimal(price);
+export function validatePrice(price: string | number): string {
+  // Convert number to string, checking precision first
+  let priceStr: string;
+  if (typeof price === 'number') {
+    priceStr = String(price);
+    const decimalPart = priceStr.split('.')[1];
+    if (decimalPart && decimalPart.length > PRICE_CONSTRAINTS.MAX_DECIMALS) {
+      throw new InvalidParamError(
+        `Price precision exceeds ${PRICE_CONSTRAINTS.MAX_DECIMALS} decimal places: ${priceStr}. Please provide a price with at most ${PRICE_CONSTRAINTS.MAX_DECIMALS} decimal places.`,
+      );
+    }
+  } else {
+    priceStr = price;
+  }
+
+  const priceDecimal = new Decimal(priceStr);
   const minPrice = new Decimal(PRICE_CONSTRAINTS.MIN.toString());
   const maxPrice = new Decimal(PRICE_CONSTRAINTS.MAX.toString());
 
   if (priceDecimal.lessThan(minPrice) || priceDecimal.greaterThan(maxPrice)) {
     throw new InvalidParamError(
-      `Price must be between ${PRICE_CONSTRAINTS.MIN} and ${PRICE_CONSTRAINTS.MAX}`,
+      `Price ${priceStr} is out of valid range. Price must be between ${PRICE_CONSTRAINTS.MIN} and ${PRICE_CONSTRAINTS.MAX}.`,
     );
   }
 
-  // Check decimal places
+  // Check decimal places for string input
   const decimalPlaces = priceDecimal.decimalPlaces();
   if (decimalPlaces > PRICE_CONSTRAINTS.MAX_DECIMALS) {
     throw new InvalidParamError(
-      `Price precision cannot exceed ${PRICE_CONSTRAINTS.MAX_DECIMALS} decimal places`,
+      `Price precision exceeds ${PRICE_CONSTRAINTS.MAX_DECIMALS} decimal places: ${priceStr}. Maximum allowed is ${PRICE_CONSTRAINTS.MAX_DECIMALS} decimal places.`,
     );
   }
+
+  return priceStr;
+}
+
+/**
+ * Validate and convert amount to string
+ * @param amount - Amount to validate (string or number)
+ * @param maxDecimals - Maximum decimal places allowed (optional)
+ * @param fieldName - Field name for error messages
+ * @throws {InvalidParamError} If amount precision exceeds maxDecimals
+ * @returns Validated amount as string
+ */
+export function validateAmount(
+  amount: string | number,
+  maxDecimals?: number,
+  fieldName: string = 'amount',
+): string {
+  let amountStr: string;
+  if (typeof amount === 'number') {
+    amountStr = String(amount);
+  } else {
+    amountStr = amount;
+  }
+
+  if (maxDecimals !== undefined) {
+    const decimalPart = amountStr.split('.')[1];
+    if (decimalPart && decimalPart.length > maxDecimals) {
+      throw new InvalidParamError(
+        `${fieldName} precision exceeds ${maxDecimals} decimal places: ${amountStr}. Maximum allowed is ${maxDecimals} decimal places.`,
+      );
+    }
+  }
+
+  return amountStr;
 }
 
 /**

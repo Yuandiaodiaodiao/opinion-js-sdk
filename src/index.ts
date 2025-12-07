@@ -50,7 +50,7 @@ export {
 } from './config.js';
 
 // Utilities - Public API only
-export { safeAmountToWei, weiToAmount, validatePrice } from './utils/precision.js';
+export { safeAmountToWei, weiToAmount, validatePrice, validateAmount } from './utils/precision.js';
 export {
   validateMarketId,
   validateChainId,
