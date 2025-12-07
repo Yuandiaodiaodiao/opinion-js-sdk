@@ -1,6 +1,6 @@
 {
   "name": "unofficial-opinion-clob-sdk",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Unofficial TypeScript SDK for Opinion Labs CLOB prediction markets",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
